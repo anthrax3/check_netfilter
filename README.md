@@ -7,7 +7,7 @@ Testing release: **testing**
 
 ## Description
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed mollis nunc, sed lacinia ligula. Sed ac ante ipsum. Aliquam molestie, eros sed aliquam cursus, ante ipsum volutpat nisl, at pretium diam lacus at quam. Suspendisse commodo magna eu aliquet fringilla.
+This Nagios simple plugin for checking the **Netfilter** number of rules in the **INPUT** and **OUTPUT** chains.
 
 ## Parameters
 
@@ -18,45 +18,35 @@ Provides the following options:
     check_netfilter <option|long-option>
 
   Examples:
-    check_netfilter --help
+    check_netfilter -i 20 -o 40
 
   Options:
         --help                      show this message
+    -i, --in-limit                  INPUT chain limit (If below send a critical)
+    -o, --out-limit                 OUTPUT chain limit (If below send a critical)
 ``````
-
-## Before importing
-
-- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed mollis nunc, sed lacinia ligula. Sed ac ante ipsum. Aliquam molestie, eros sed aliquam cursus, ante ipsum volutpat nisl, at pretium diam lacus at quam. Suspendisse commodo magna eu aliquet fringilla.
 
 ## Requirements
 
 **<u>check_netfilter</u>** uses external utilities to be installed before running:
 
-- link-to-external-tool
+- [iptables](https://www.netfilter.org/index.html)
 
 ## Use example
-
-> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed mollis nunc, sed lacinia ligula. Sed ac ante ipsum. Aliquam molestie, eros sed aliquam cursus, ante ipsum volutpat nisl, at pretium diam lacus at quam. Suspendisse commodo magna eu aliquet fringilla.
 
 Then an example of starting the tool:
 
 ``````
-check_netfilter --help
+check_netfilter -i 20 -o 40
 ``````
 
-Show help message:
+Sets the threshold (minimum number of rules) in the **INPUT** chain:
 
-- `--help`
+- `-i 20`
 
-## Important
+Sets the threshold (minimum number of rules) in the **OUTPU** chain:
 
-- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed mollis nunc, sed lacinia ligula. Sed ac ante ipsum. Aliquam molestie, eros sed aliquam cursus, ante ipsum volutpat nisl, at pretium diam lacus at quam. Suspendisse commodo magna eu aliquet fringilla.
-- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed mollis nunc, sed lacinia ligula. Sed ac ante ipsum. Aliquam molestie, eros sed aliquam cursus, ante ipsum volutpat nisl, at pretium diam lacus at quam. Suspendisse commodo magna eu aliquet fringilla.
-
-## Limitations
-
-- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed mollis nunc, sed lacinia ligula. Sed ac ante ipsum. Aliquam molestie, eros sed aliquam cursus, ante ipsum volutpat nisl, at pretium diam lacus at quam. Suspendisse commodo magna eu aliquet fringilla.
-- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed mollis nunc, sed lacinia ligula. Sed ac ante ipsum. Aliquam molestie, eros sed aliquam cursus, ante ipsum volutpat nisl, at pretium diam lacus at quam. Suspendisse commodo magna eu aliquet fringilla.
+- `-o 40`
 
 ## Project architecture
 
