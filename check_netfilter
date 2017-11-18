@@ -144,7 +144,6 @@ function _help_() {
     $_init_name <option|long-option>
 
   Examples:
-    $_init_name --help
     $_init_name -i 20 -o 40
 
   Options:
