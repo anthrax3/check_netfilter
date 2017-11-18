@@ -1,4 +1,4 @@
-# git-template-full
+# git-template-lite
 
 ## Version
 
@@ -15,26 +15,13 @@ Provides the following options:
 
 ``````
   Usage:
-    git-template-full <option|long-option>
+    git-template-lite <option|long-option>
 
   Examples:
-    git-template-full --help
+    git-template-lite --help
 
   Options:
         --help                      show this message
-        --debug                     displays information on the screen (debug mode)
-        --verbose                   displays 'info' messages on the screen (verbose mode)
-        --time                      displays execution time, occurs only with --verbose
-    -c, --config <file>             attach an external config file to the script
-``````
-
-## Configuration file
-
-The configuration file (appended with the `-c|--config` parameter) has the following structure:
-
-``````
-# shellcheck shell=bash
-
 ``````
 
 ## Before importing
@@ -43,7 +30,7 @@ The configuration file (appended with the `-c|--config` parameter) has the follo
 
 ## Requirements
 
-**<u>git-template-full</u>** uses external utilities to be installed before running:
+**<u>git-template-lite</u>** uses external utilities to be installed before running:
 
 - link-to-external-tool
 
@@ -54,20 +41,12 @@ The configuration file (appended with the `-c|--config` parameter) has the follo
 Then an example of starting the tool:
 
 ``````
-git-template-full -c src/configs/template.cfg --time --verbose
+git-template-lite --help
 ``````
 
-In the first place we define the configuration (which should be prepared in advance):
+Show help message:
 
-- `-c src/configs/xen.cfg`
-
-Displays the execution time of the selected commands (only with `--verbose` mode):
-
-- `--time`
-
-Verbose mode - displays more detailed information on the screen:
-
-- `--verbose`
+- `--help`
 
 ## Important
 
@@ -81,15 +60,12 @@ Verbose mode - displays more detailed information on the screen:
 
 ## Project architecture
 
-    |-- git-template-full       # main script (init)
+    |-- git-template-lite       # main script (init)
     |-- LICENSE.md              # GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007
     |-- README.md               # this simple documentation
     |-- .gitignore              # ignore untracked files
     |-- .gitkeep                # track empty directory
     |-- src                     # includes external project files
-        |-- _import_            # external variables and functions
-        |-- configs             # directory with configurations
-            |-- template.cfg    # template configuration
     |-- doc                     # includes documentation, images and manuals
 
 ## License

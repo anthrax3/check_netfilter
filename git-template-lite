@@ -1,0 +1,305 @@
+#!/usr/bin/env bash
+
+### BEG SCRIPT INFO
+#
+# Header:
+#
+#         fname : "git-template-lite"
+#         cdate : "00.00.0000"
+#        author : "Michał Żurawski <contact@nslab.at>"
+#      tab_size : "2"
+#     soft_tabs : "yes"
+#
+# Description:
+#
+#   See README.md file for more information.
+#
+# License:
+#
+#   git-template-lite, Copyright (C) 2017  Michał Żurawski
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+### END SCRIPT INFO
+
+
+################################################################################
+################## The configuration parameters of the script ##################
+################################################################################
+
+# Bash 'Strict Mode':
+#   errexit  - exit the script if any statement returns a non-true return value
+#   pipefail - exit the script if any command in a pipeline errors
+#   nounset  - exit the script if you try to use an uninitialised variable
+#   xtrace   - display debugging information
+set -o pipefail
+
+# Internal field separator (more flexible):
+#   IFS_ORIG="$IFS"
+#   IFS_HACK=$'\n\t'
+#   IFS="$IFS_HACK"
+
+# PATH env variable setup:
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Setting permissions in the script environment:
+#   0022 - less restrictive settings (default value)
+#   0027 - for better security than above
+#   0077 - only for user access (more restrictive)
+umask 0027
+
+
+################################################################################
+############################### Global variables ###############################
+################################################################################
+
+# The tables that store call parameters.
+__init_params=()
+__script_params=("$@")
+
+# Store the name of the script and directory call.
+readonly _init_name="$(basename "$0")"
+readonly _init_directory="$(dirname "$(readlink -f "$0")")"
+
+
+################################################################################
+####################### Definitions of global functions ########################
+################################################################################
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _exit_()
+#
+# Description:
+#   Covers the default exit command.
+#
+# Usage:
+#   _exit_ value
+#
+# Examples:
+#   _exit_ 0
+#
+
+function _exit_() { _STATUS="$1" ; exit "$_STATUS" ; }
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _get_trap_SIG()
+#
+# Description:
+#   Ensuring they always perform necessary cleanup operations,
+#   even when something unexpected goes wrong.
+#
+# Usage:
+#   trap _get_trap_SIG SIGNAL
+#
+# Examples:
+#   trap _get_trap_SIG EXIT
+#
+
+function _get_trap_SIG() {
+
+  local _FUNCTION_ID="_get_trap_SIG"
+  local _STATE="${_STATUS:-}"
+
+  # Running tasks before the end of the script.
+  _after_init
+
+  if [ -z "$_STATE" ] ; then _STATE=255 ; fi
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _help_()
+#
+# Description:
+#   Help message. Should be consistent with the contents of the file README.md.
+#
+# Usage:
+#   _help_
+#
+# Examples:
+#   _help_
+#
+
+function _help_() {
+
+  local _FUNCTION_ID="_help_"
+  local _STATE=0
+
+  printf "%s" "\                   
+
+  Usage:
+    $_init_name <option|long-option>
+
+  Examples:
+    $_init_name --help
+
+  Options:
+        --help                      show this message
+
+
+  This program comes with ABSOLUTELY NO WARRANTY.
+  This is free software, and you are welcome to redistribute it
+  under certain conditions; for more details please see
+  <http://www.gnu.org/licenses/>.
+
+"
+
+  return $_STATE
+
+}
+
+
+################################################################################
+################# Definitions of user variables and functions ##################
+################################################################################
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _before_init()
+#
+# Description:
+#   INFOs performed before calling the __main__ function, e.g.
+#   attaching files, cleaning logs (if you need a function that will deal
+#   with it, put it here).
+#
+# Usage:
+#   _before_init
+#
+# Examples:
+#   _before_init
+#
+
+function _before_init() {
+
+  local _FUNCTION_ID="_before_init"
+  local _STATE=0
+
+  cd "$_init_directory" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: '$_init_directory'"
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _after_init()
+#
+# Description:
+#   INFOs performed after calling the __main__ function, e.g.
+#   cleaning logs (if you need a function that will deal with it,
+#   put it here).
+#
+# Usage:
+#   _after_init
+#
+# Examples:
+#   _after_init
+#
+
+function _after_init() {
+
+  local _FUNCTION_ID="_after_init"
+  local _STATE=0
+
+  cd "$_init_directory" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: '$_init_directory'"
+
+  return $_STATE
+
+}
+
+
+################################################################################
+######################### Main function (script init) ##########################
+################################################################################
+
+function __main__() {
+
+  local _FUNCTION_ID="__main__"
+  local _STATE=0
+
+  # Specifies the call parameters of the script, the exact description
+  # can be found in _help_ and file README.md.
+  local _short_opt=""
+  local _long_opt="help"
+
+  _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
+                   -n "${_init_name}" -- "${__script_params[@]}")
+
+  # Ends an error if the parameter or its argument is not valid.
+  _getopt_state="$?"
+  if [ $_getopt_state != 0 ] ; then
+    _exit_ 1
+  # Ends if no parameter is specified.
+  elif [[ "${#__script_params[@]}" -eq 0 ]] ; then
+    _exit_ 0
+  fi
+
+  eval set -- "$_GETOPT_PARAMS"
+  while true ; do
+
+    case $1 in
+
+      --help)
+
+        _help_
+
+        shift ; _exit_ 0 ;;
+
+      *)
+
+        if [[ "$2" == "-" ]] || [[ ! -z "$2" ]] ; then
+
+          printf "%s: invalid option -- '%s'\n" "$_init_name" "$2"
+          _exit_ 1
+
+        # elif [[ -z "$2" ]] ; then break ; fi
+        else break ; fi
+
+        ;;
+
+    esac
+
+  done
+
+  # Running tasks before start user functions.
+  _before_init
+
+  ################################# USER SPACE #################################
+  # ````````````````````````````````````````````````````````````````````````````
+  # Put here all your variable declarations, function calls
+  # and all the other code blocks.
+
+  # shellcheck disable=SC2034
+  # Generate random value.
+  _random=$(date +"%s")
+
+  # ````````````````````````````````````````````````````````````````````````````
+
+  return $_STATE
+
+}
+
+trap _get_trap_SIG EXIT
+
+# An array as an argument to a function call __main__,
+# is required if we want to operate on arguments of type $1, $2, ...
+__main__ "${__script_params[@]}"
+
+_exit_ 0
