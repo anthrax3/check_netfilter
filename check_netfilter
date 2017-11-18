@@ -5,7 +5,7 @@
 # Header:
 #
 #         fname : "check_netfilter"
-#         cdate : "00.00.0000"
+#         cdate : "30.07.2017"
 #        author : "Michał Żurawski <contact@nslab.at>"
 #      tab_size : "2"
 #     soft_tabs : "yes"
@@ -145,10 +145,12 @@ function _help_() {
 
   Examples:
     $_init_name --help
+    $_init_name -i 20 -o 40
 
   Options:
         --help                      show this message
-
+    -i, --in-limit                  INPUT chain limit (If below send a critical)
+    -o, --out-limit                 OUTPUT chain limit (If below send a critical)
 
   This program comes with ABSOLUTELY NO WARRANTY.
   This is free software, and you are welcome to redistribute it
@@ -165,6 +167,20 @@ function _help_() {
 ################################################################################
 ################# Definitions of user variables and functions ##################
 ################################################################################
+
+### Default nagios/icinga exit codes
+# 0 -> OK
+# 1 -> WARNING
+# 2 -> CRITICAL
+###
+
+### Set nagios/icinga commands: "ID:COMMAND"
+_icinga_cmd=(\
+"0:$(iptables --list-rules INPUT | wc -l)" \
+"1:$(iptables --list-rules OUTPUT | wc -l)" \
+)
+
+_chain_counter=()
 
 # ``````````````````````````````````````````````````````````````````````````````
 # Function name: _before_init()
@@ -236,8 +252,8 @@ function __main__() {
 
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
-  local _short_opt=""
-  local _long_opt="help"
+  local _short_opt="i:o:"
+  local _long_opt="help,in-limit:,out-limit:"
 
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
                    -n "${_init_name}" -- "${__script_params[@]}")
@@ -261,6 +277,18 @@ function __main__() {
         _help_
 
         shift ; _exit_ 0 ;;
+
+      -i|--in-limit)
+
+        input_limit="${2:-1}"
+
+        shift 2 ;;
+
+      -o|--out-limit)
+
+        output_limit="${2:-1}"
+
+        shift 2 ;;
 
       *)
 
@@ -289,6 +317,36 @@ function __main__() {
   # shellcheck disable=SC2034
   # Generate random value.
   _random=$(date +"%s")
+
+  for act in "${_icinga_cmd[@]}" ; do
+
+    # Extract ID and COMMAND.
+    _id="${act%%:*}"
+    _out="${act##*:}"
+
+    # Run COMMAND.
+    IFS=$'\n'
+    _chain_counter+=("${_out}")
+    unset IFS
+
+  done
+
+  # Set output info.
+  stdout="INPUT=${_chain_counter[0]}, OUTPUT=${_chain_counter[1]}"
+
+  # Checking the counters.
+  if [[ "${input_limit}" -le "${_chain_counter[0]}" ]] \
+  && [[ "${output_limit}" -le "${_chain_counter[1]}" ]] ; then
+
+    echo -en "OK - $stdout\n"
+    exit 0
+
+  else
+
+    echo -en "CRITICAL - $stdout\n"
+    exit 2
+
+  fi
 
   # ````````````````````````````````````````````````````````````````````````````
 
