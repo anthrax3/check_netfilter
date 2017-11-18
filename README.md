@@ -1,4 +1,4 @@
-# git-template-lite
+# check_netfilter
 
 ## Version
 
@@ -15,10 +15,10 @@ Provides the following options:
 
 ``````
   Usage:
-    git-template-lite <option|long-option>
+    check_netfilter <option|long-option>
 
   Examples:
-    git-template-lite --help
+    check_netfilter --help
 
   Options:
         --help                      show this message
@@ -30,7 +30,7 @@ Provides the following options:
 
 ## Requirements
 
-**<u>git-template-lite</u>** uses external utilities to be installed before running:
+**<u>check_netfilter</u>** uses external utilities to be installed before running:
 
 - link-to-external-tool
 
@@ -41,7 +41,7 @@ Provides the following options:
 Then an example of starting the tool:
 
 ``````
-git-template-lite --help
+check_netfilter --help
 ``````
 
 Show help message:
@@ -60,7 +60,7 @@ Show help message:
 
 ## Project architecture
 
-    |-- git-template-lite       # main script (init)
+    |-- check_netfilter         # main script (init)
     |-- LICENSE.md              # GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007
     |-- README.md               # this simple documentation
     |-- .gitignore              # ignore untracked files
